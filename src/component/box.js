@@ -13,3 +13,4 @@ const box = (props) => {
     </div>
   );
 };
+export default box;
