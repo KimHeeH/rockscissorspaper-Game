@@ -1,6 +1,6 @@
+import React, { Component } from "react";
 import "./App.css";
 import Box from "./component/box";
-import { useState } from "react";
 
 const choice = {
   rock: {
@@ -17,38 +17,44 @@ const choice = {
   },
 };
 
-function App() {
-  const [userSelect, setUserSelect] = useState(null);
-  const [computerSelect, setComputerSelect] = useState(null);
-  const [userResult, setUserResult] = useState("");
-  const [computerResult, setComputerResult] = useState("");
-  const [userBorder, setUserBorder] = useState("blue");
-  const [computerBorder, setComputerBorder] = useState("blue");
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      userSelect: null,
+      computerSelect: null,
+      userResult: "",
+      computerResult: "",
+      userBorder: "blue",
+      computerBorder: "blue",
+    };
+  }
 
-  const play = (userChoice) => {
+  play = (userChoice) => {
     const user = choice[userChoice];
-    const computer = randomChoice();
-    const userResult = judgeWinner(user, computer);
+    const computer = this.randomChoice();
+    const userResult = this.judgeWinner(user, computer);
     const computerResult =
       userResult === "tie" ? "tie" : userResult === "win" ? "lose" : "win";
 
-    setUserSelect(user);
-    setComputerSelect(computer);
-    setUserResult(userResult);
-    setComputerResult(computerResult);
-
-    setUserBorder(getColor(userResult));
-    setComputerBorder(getColor(computerResult));
+    this.setState({
+      userSelect: user,
+      computerSelect: computer,
+      userResult: userResult,
+      computerResult: computerResult,
+      userBorder: this.getColor(userResult),
+      computerBorder: this.getColor(computerResult),
+    });
   };
 
-  const randomChoice = () => {
+  randomChoice = () => {
     const itemArray = Object.keys(choice);
     const randomIndex = Math.floor(Math.random() * itemArray.length);
     const key = itemArray[randomIndex];
     return choice[key];
   };
 
-  const judgeWinner = (user, computer) => {
+  judgeWinner = (user, computer) => {
     if (user.name === computer.name) return "tie";
     if (user.name === "Rock")
       return computer.name === "Scissor" ? "win" : "lose";
@@ -57,40 +63,51 @@ function App() {
     if (user.name === "Paper") return computer.name === "Rock" ? "win" : "lose";
   };
 
-  const getColor = (result) => {
+  getColor = (result) => {
     if (result === "tie") return "black";
     return result === "win" ? "green" : "red";
   };
 
-  return (
-    <div>
-      <div className="main">
-        <Box
-          title="You"
-          item={userSelect}
-          result={userResult}
-          color={userBorder}
-        />
-        <Box
-          title="Computer"
-          item={computerSelect}
-          result={computerResult}
-          color={computerBorder}
-        />
+  render() {
+    const {
+      userSelect,
+      computerSelect,
+      userResult,
+      computerResult,
+      userBorder,
+      computerBorder,
+    } = this.state;
+
+    return (
+      <div>
+        <div className="main">
+          <Box
+            title="You"
+            item={userSelect}
+            result={userResult}
+            color={userBorder}
+          />
+          <Box
+            title="Computer"
+            item={computerSelect}
+            result={computerResult}
+            color={computerBorder}
+          />
+        </div>
+        <div className="main">
+          <button className="bt" onClick={() => this.play("scissor")}>
+            가위
+          </button>
+          <button className="bt" onClick={() => this.play("rock")}>
+            바위
+          </button>
+          <button className="bt" onClick={() => this.play("paper")}>
+            보
+          </button>
+        </div>
       </div>
-      <div className="main">
-        <button className="bt" onClick={() => play("scissor")}>
-          가위
-        </button>
-        <button className="bt" onClick={() => play("rock")}>
-          바위
-        </button>
-        <button className="bt" onClick={() => play("paper")}>
-          보
-        </button>
-      </div>
-    </div>
-  );
+    );
+  }
 }
 
 export default App;
